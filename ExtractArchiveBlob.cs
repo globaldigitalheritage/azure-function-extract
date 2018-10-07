@@ -1,16 +1,47 @@
+using System;
 using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace GDH.ExtractArchiveBlob
 {
     public static class ExtractArchiveBlob
     {
         [FunctionName("ExtractArchiveBlob")]
-        public static void Run([BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream myBlob, string name, ILogger log)
+        public static async Task RunAsync([BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream, string name, Binder binder, ILogger log)
         {
-            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
+            log.LogInformation($"Processing blob\n Name:{name} \n Size: {zipStream.Length} Bytes");
+
+            var storageAccountConnectionString = System.Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+            var storageAccount = CloudStorageAccount.Parse(storageAccountConnectionString);
+
+            var containerName = System.Environment.GetEnvironmentVariable("TargetContainerName");
+            var blobPrefix = System.Environment.GetEnvironmentVariable("BlobPrefix");
+
+            var outputFolder = $"{blobPrefix}/{name}";
+
+            var blobClient = storageAccount.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference(containerName);
+
+            using (ZipArchive zip = new ZipArchive(zipStream)){
+                foreach(var entry in zip.Entries){
+                    var blobPath = $"{outputFolder}/{entry.FullName}";
+                    var blob = container.GetBlockBlobReference(blobPath);
+                    using (var entryStream = entry.Open()){
+                        if (entry.Length > 0){
+                            log.LogTrace("Uploading: blobPath");
+                            await blob.UploadFromStreamAsync(entryStream);
+                        }
+                    }
+                }
+            }
+
+            log.LogInformation($"Done processing blob: {name}");
         }
     }
 }
