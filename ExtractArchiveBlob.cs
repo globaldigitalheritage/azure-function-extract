@@ -21,9 +21,11 @@ namespace GDH.ExtractArchiveBlob
             var storageAccount = CloudStorageAccount.Parse(storageAccountConnectionString);
 
             var containerName = System.Environment.GetEnvironmentVariable("TargetContainerName");
-            var blobPrefix = System.Environment.GetEnvironmentVariable("BlobPrefix");
+            log.LogInformation($"Target container: {containerName}");
 
+            var blobPrefix = System.Environment.GetEnvironmentVariable("BlobPrefix");
             var outputFolder = $"{blobPrefix}/{name}";
+            log.LogInformation($"Output folder: {outputFolder}");
 
             var blobClient = storageAccount.CreateCloudBlobClient();
             var container = blobClient.GetContainerReference(containerName);
