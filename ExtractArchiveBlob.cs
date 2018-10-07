@@ -13,7 +13,7 @@ namespace GDH.ExtractArchiveBlob
     public static class ExtractArchiveBlob
     {
         [FunctionName("ExtractArchiveBlob")]
-        public static async Task RunAsync([BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream, string name, Binder binder, ILogger log)
+        public static async Task RunAsync([BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream, string name, ILogger log)
         {
             log.LogInformation($"Processing blob\n Name:{name} \n Size: {zipStream.Length} Bytes");
 
