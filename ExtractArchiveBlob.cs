@@ -24,7 +24,7 @@ namespace GDH.ExtractArchiveBlob
             log.LogInformation($"Target container: {containerName}");
 
             var blobPrefix = System.Environment.GetEnvironmentVariable("BlobPrefix");
-            var outputFolder = $"{blobPrefix}/{name}_extracted";
+            var outputFolder = $"{blobPrefix}/{name}.zip_extracted";
             log.LogInformation($"Output folder: {outputFolder}");
 
             var blobClient = storageAccount.CreateCloudBlobClient();
