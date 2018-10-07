@@ -31,12 +31,17 @@ namespace GDH.ExtractArchiveBlob
             var container = blobClient.GetContainerReference(containerName);
 
             using (ZipArchive zip = new ZipArchive(zipStream)){
+                log.LogInformation($"Total files in archive: {zip.Entries.Count}");
+                
                 foreach(var entry in zip.Entries){
+                    log.LogTrace($"Processing: {entry.FullName}");
+                    
                     var blobPath = $"{outputFolder}/{entry.FullName}";
-                    var blob = container.GetBlockBlobReference(blobPath);
+                    
                     using (var entryStream = entry.Open()){
                         if (entry.Length > 0){
-                            log.LogTrace("Uploading: blobPath");
+                            log.LogTrace($"Uploading: {blobPath}");
+                            var blob = container.GetBlockBlobReference(blobPath);
                             await blob.UploadFromStreamAsync(entryStream);
                         }
                     }
