@@ -32,18 +32,21 @@ namespace GDH.ExtractArchiveBlob
 
         private static async Task SendEmail(string subject, IList<string> body, IAsyncCollector<SendGridMessage> messageCollector)
         {
-            var emailToAddresses = System.Environment.GetEnvironmentVariable("EmailTo").Split();
+            var emailToAddresses = System.Environment.GetEnvironmentVariable("EmailTo");
 
-            var message = new SendGridMessage();
-            message.AddContent("text/plain", string.Join("\n", body.ToArray()));
-            message.SetSubject(subject);
-
-            foreach (var email in emailToAddresses)
+            if (!string.IsNullOrWhiteSpace(emailToAddresses))
             {
-                message.AddTo(email);
-            }
+                var message = new SendGridMessage();
+                message.AddContent("text/plain", string.Join("\n", body.ToArray()));
+                message.SetSubject(subject);
 
-            await messageCollector.AddAsync(message);
+                foreach (var email in emailToAddresses.Split())
+                {
+                    message.AddTo(email);
+                }
+
+                await messageCollector.AddAsync(message);
+            }
         }
     }
 
@@ -121,7 +124,8 @@ namespace GDH.ExtractArchiveBlob
             _logger.LogInformation($"Done processing blob: {archiveName}.zip");
         }
 
-        public List<string> GetEmailReport(){
+        public List<string> GetEmailReport()
+        {
             return _logger.EmailReport;
         }
     }
