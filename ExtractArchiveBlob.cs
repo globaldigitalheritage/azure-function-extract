@@ -89,8 +89,8 @@ namespace GDH.ExtractArchiveBlob
 
         private string GetOutputFolder(string name)
         {
-            var blobPrefix = System.Environment.GetEnvironmentVariable("OutputPrefix");
-            var outputFolder = $"{blobPrefix}/{name}.zip_extracted";
+            var outputPrefix = System.Environment.GetEnvironmentVariable("OutputPrefix");
+            var outputFolder = $"{outputPrefix}/{name}.zip_extracted";
             _logger.LogInformation($"Output folder: {outputFolder}");
             return outputFolder;
         }
