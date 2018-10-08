@@ -5,8 +5,9 @@
     <RootNamespace>azure_function_extract</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.0" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.22" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.0"/>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.22"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SendGrid" Version="3.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
