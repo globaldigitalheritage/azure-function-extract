@@ -14,9 +14,8 @@ using System.Collections.Generic;
 
 namespace GDH.ExtractArchiveBlob
 {
-    public class ExtractArchiveBlob
+    public static class ExtractArchiveBlob
     {
-
         [FunctionName("ExtractArchiveBlob")]
         public static async Task RunAsync(
             [BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
