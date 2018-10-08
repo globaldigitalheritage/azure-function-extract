@@ -19,7 +19,7 @@ namespace GDH.ExtractArchiveBlob
 
         [FunctionName("ExtractArchiveBlob")]
         public static async Task RunAsync(
-            [BlobTrigger("%ContainerName%/%InputPrefix%/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
+            [BlobTrigger("%InputContainerName%/%InputPrefix%/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
             [SendGrid(ApiKey = "SendGridApiKey")] IAsyncCollector<SendGridMessage> messageCollector,
             string archiveName,
             ILogger log)
@@ -82,14 +82,14 @@ namespace GDH.ExtractArchiveBlob
 
         private string GetContainerName()
         {
-            var containerName = System.Environment.GetEnvironmentVariable("TargetContainerName");
-            _logger.LogInformation($"Target container: {containerName}");
+            var containerName = System.Environment.GetEnvironmentVariable("OutputContainerName");
+            _logger.LogInformation($"Output container: {containerName}");
             return containerName;
         }
 
         private string GetOutputFolder(string name)
         {
-            var blobPrefix = System.Environment.GetEnvironmentVariable("BlobPrefix");
+            var blobPrefix = System.Environment.GetEnvironmentVariable("OutputPrefix");
             var outputFolder = $"{blobPrefix}/{name}.zip_extracted";
             _logger.LogInformation($"Output folder: {outputFolder}");
             return outputFolder;
