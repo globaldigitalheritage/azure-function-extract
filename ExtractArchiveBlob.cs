@@ -19,7 +19,7 @@ namespace GDH.ExtractArchiveBlob
 
         [FunctionName("ExtractArchiveBlob")]
         public static async Task RunAsync(
-            [BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
+            [BlobTrigger("%ContainerName%/%InputPrefix%/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
             [SendGrid(ApiKey = "SendGridApiKey")] IAsyncCollector<SendGridMessage> messageCollector,
             string archiveName,
             ILogger log)
