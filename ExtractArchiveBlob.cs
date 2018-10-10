@@ -31,7 +31,7 @@ namespace GDH.ExtractArchiveBlob
 
             if (!string.IsNullOrWhiteSpace(emailToAddresses))
             {
-                logger.LogInformation("Preparing email notification");
+                logger.LogTrace("Preparing email notification");
 
                 var message = new SendGridMessage();
                 var content = string.Join("\n", body.ToArray());
@@ -44,8 +44,8 @@ namespace GDH.ExtractArchiveBlob
                     message.AddTo(email);
                 }
 
-                logger.LogInformation($"Sending message to: {emailToAddresses}");
-                logger.LogInformation($"Message contents:\n {content}");
+                logger.LogTrace($"Sending message to: {emailToAddresses}");
+                logger.LogTrace($"Message contents:\n {content}");
 
                 await messageCollector.AddAsync(message);
             }

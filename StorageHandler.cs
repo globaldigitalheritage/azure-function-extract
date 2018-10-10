@@ -78,7 +78,7 @@ namespace GDH.ExtractArchiveBlob
                     }
                 }
             }
-            _logger.LogInformation($"Done processing archive");
+            _logger.LogTrace($"Done processing archive");
         }
 
         public List<string> GetEmailReport()
