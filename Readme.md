@@ -13,3 +13,4 @@ This Azure Function triggers on .zip archives uploaded to Blob Storage.
 After extraction an email is sent using SendGrid. To enable, create an account and fill out the following app settings.  
 - `SendGridApiKey`: SendGrid Api Key
 - `EmailTo`: a **space-separated** list of email addresses to send notifications to
+- `EmailFrom`: email address to display as sender
