@@ -137,28 +137,4 @@ namespace GDH.ExtractArchiveBlob
             return _logger.EmailReport;
         }
     }
-
-    public class Logger
-    {
-        private ILogger _log;
-
-        public List<string> EmailReport { get; set; }
-
-        public Logger(ILogger log)
-        {
-            this._log = log;
-            EmailReport = new List<string>();
-        }
-
-        public void LogInformation(string logMessage)
-        {
-            _log.LogInformation(logMessage);
-            EmailReport.Add(logMessage);
-        }
-
-        public void LogTrace(string logMessage)
-        {
-            _log.LogTrace(logMessage);
-        }
-    }
 }
