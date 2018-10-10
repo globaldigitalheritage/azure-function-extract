@@ -78,7 +78,7 @@ namespace GDH.ExtractArchiveBlob
                     }
                 }
             }
-            _logger.LogInformation($"Succesfully extracted archive {archiveName}");
+            _logger.LogInformation($"Succesfully extracted archive {archiveName}.zip");
         }
 
         public List<string> GetEmailReport()
