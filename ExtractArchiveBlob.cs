@@ -33,6 +33,7 @@ namespace GDH.ExtractArchiveBlob
         private static async Task SendEmail(string subject, IList<string> body, IAsyncCollector<SendGridMessage> messageCollector, Logger logger)
         {           
             var emailToAddresses = System.Environment.GetEnvironmentVariable("EmailTo");
+            var emailFromAddress = System.Environment.GetEnvironmentVariable("EmailFrom");
 
             if (!string.IsNullOrWhiteSpace(emailToAddresses))
             {
@@ -41,6 +42,7 @@ namespace GDH.ExtractArchiveBlob
                 var message = new SendGridMessage();
                 message.AddContent("text/plain", string.Join("\n", body.ToArray()));
                 message.SetSubject(subject);
+                message.SetFrom(emailFromAddress);
 
                 foreach (var email in emailToAddresses.Split())
                 {
