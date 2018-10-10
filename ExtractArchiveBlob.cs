@@ -19,14 +19,14 @@ namespace GDH.ExtractArchiveBlob
         [FunctionName("ExtractArchiveBlob")]
         public static async Task RunAsync(
             [BlobTrigger("arches/uploadedfiles/{name}.zip", Connection = "AzureWebJobsStorage")]Stream zipStream,
-            // [SendGrid(ApiKey = "SendGridApiKey")] IAsyncCollector<SendGridMessage> messageCollector,
+            [SendGrid(ApiKey = "SendGridApiKey")] IAsyncCollector<SendGridMessage> messageCollector,
             string name,
             ILogger log)
         {
             var storageHandler = new StorageHandler(log);
             await storageHandler.ExtractAndUpload(zipStream, name);
 
-            await SendEmail($"Extracted: {name}.zip", storageHandler.GetEmailReport(), null);
+            await SendEmail($"Extracted: {name}.zip", storageHandler.GetEmailReport(), messageCollector);
         }
 
         private static async Task SendEmail(string subject, IList<string> body, IAsyncCollector<SendGridMessage> messageCollector)
@@ -44,7 +44,7 @@ namespace GDH.ExtractArchiveBlob
                     message.AddTo(email);
                 }
 
-                // await messageCollector.AddAsync(message);
+                await messageCollector.AddAsync(message);
             }
         }
     }
