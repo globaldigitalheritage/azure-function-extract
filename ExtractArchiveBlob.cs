@@ -23,18 +23,21 @@ namespace GDH.ExtractArchiveBlob
             string name,
             ILogger log)
         {
-            var storageHandler = new StorageHandler(log);
+            var logger = new Logger(log);
+            var storageHandler = new StorageHandler(logger);
             await storageHandler.ExtractAndUpload(zipStream, name);
 
-            await SendEmail($"Extracted: {name}.zip", storageHandler.GetEmailReport(), messageCollector);
+            await SendEmail($"Extracted: {name}.zip", storageHandler.GetEmailReport(), messageCollector, logger);
         }
 
-        private static async Task SendEmail(string subject, IList<string> body, IAsyncCollector<SendGridMessage> messageCollector)
-        {
+        private static async Task SendEmail(string subject, IList<string> body, IAsyncCollector<SendGridMessage> messageCollector, Logger logger)
+        {           
             var emailToAddresses = System.Environment.GetEnvironmentVariable("EmailTo");
 
             if (!string.IsNullOrWhiteSpace(emailToAddresses))
             {
+                logger.LogInformation("Preparing email notification");
+
                 var message = new SendGridMessage();
                 message.AddContent("text/plain", string.Join("\n", body.ToArray()));
                 message.SetSubject(subject);
@@ -43,6 +46,9 @@ namespace GDH.ExtractArchiveBlob
                 {
                     message.AddTo(email);
                 }
+
+                logger.LogInformation($"Sending message to: {emailToAddresses}");
+                logger.LogInformation($"Message contents:\n {message.Contents}");
 
                 await messageCollector.AddAsync(message);
             }
@@ -53,9 +59,9 @@ namespace GDH.ExtractArchiveBlob
     {
         private Logger _logger;
 
-        public StorageHandler(ILogger log)
+        public StorageHandler(Logger logger)
         {
-            _logger = new Logger(log);
+            _logger = logger;
         }
 
         public async Task ExtractAndUpload(Stream zipStream, string archiveName)
