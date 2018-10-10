@@ -40,7 +40,8 @@ namespace GDH.ExtractArchiveBlob
                 logger.LogInformation("Preparing email notification");
 
                 var message = new SendGridMessage();
-                message.AddContent("text/plain", string.Join("\n", body.ToArray()));
+                var content = string.Join("\n", body.ToArray());
+                message.AddContent("text/plain", content);
                 message.SetSubject(subject);
                 message.SetFrom(emailFromAddress);
 
@@ -50,7 +51,7 @@ namespace GDH.ExtractArchiveBlob
                 }
 
                 logger.LogInformation($"Sending message to: {emailToAddresses}");
-                logger.LogInformation($"Message contents:\n {message.Contents}");
+                logger.LogInformation($"Message contents:\n {content}");
 
                 await messageCollector.AddAsync(message);
             }
