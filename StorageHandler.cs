@@ -54,8 +54,8 @@ namespace GDH.ExtractArchiveBlob
 
         private async Task UploadZipContents(Stream zipStream, string outputFolder, CloudBlobContainer container, string archiveName)
         {
-            _logger.LogInformation("Processing archive" +
-                $"\n Name:{archiveName} \n Size: {zipStream.Length} Bytes");
+            _logger.LogInformation("Processing archive:" +
+                $"Name:{archiveName} \n Size: {zipStream.Length} Bytes");
 
             using (ZipArchive zip = new ZipArchive(zipStream))
             {
@@ -78,7 +78,7 @@ namespace GDH.ExtractArchiveBlob
                     }
                 }
             }
-            _logger.LogInformation($"Done processing blob: {archiveName}.zip");
+            _logger.LogInformation($"Done processing archive");
         }
 
         public List<string> GetEmailReport()
