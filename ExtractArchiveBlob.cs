@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,13 +19,28 @@ namespace GDH.ExtractArchiveBlob
             ILogger log)
         {
             var logger = new Logger(log);
-            var storageHandler = new StorageHandler(logger);
-            await storageHandler.ExtractAndUpload(zipStream, name);
+            string emailSubject = "";
+            string emailBody = "";
 
-            await SendEmail($"Extracted: {name}.zip", storageHandler.GetEmailReport(), messageCollector, logger);
+            try
+            {
+                var storageHandler = new StorageHandler(logger);
+                await storageHandler.ExtractAndUpload(zipStream, name);
+                emailSubject = $"Extracted: {name}.zip";
+                emailBody = storageHandler.GetEmailReport();
+            }
+            catch (Exception e)
+            {
+                emailSubject = $"Extraction job failed: {name}.zip";
+                emailBody = e.ToString();
+            }
+            finally
+            {
+                await SendEmail(emailSubject, emailBody, messageCollector, logger);
+            }
         }
 
-        private static async Task SendEmail(string subject, List<string> body, IAsyncCollector<SendGridMessage> messageCollector, Logger logger)
+        private static async Task SendEmail(string subject, string body, IAsyncCollector<SendGridMessage> messageCollector, Logger logger)
         {
             var emailToAddresses = System.Environment.GetEnvironmentVariable("EmailTo");
             var emailFromAddress = System.Environment.GetEnvironmentVariable("EmailFrom");
@@ -34,8 +50,7 @@ namespace GDH.ExtractArchiveBlob
                 logger.LogTrace("Preparing email notification");
 
                 var message = new SendGridMessage();
-                var content = string.Join("\n", body.ToArray());
-                message.AddContent("text/plain", content);
+                message.AddContent("text/plain", body);
                 message.SetSubject(subject);
                 message.SetFrom(emailFromAddress);
 
@@ -45,7 +60,7 @@ namespace GDH.ExtractArchiveBlob
                 }
 
                 logger.LogTrace($"Sending message to: {emailToAddresses}");
-                logger.LogTrace($"Message contents:\n {content}");
+                logger.LogTrace($"Message contents:\n {body}");
 
                 await messageCollector.AddAsync(message);
             }

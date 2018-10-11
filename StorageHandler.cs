@@ -81,9 +81,9 @@ namespace GDH.ExtractArchiveBlob
             _logger.LogInformation($"Succesfully extracted archive {archiveName}.zip");
         }
 
-        public List<string> GetEmailReport()
+        public string GetEmailReport()
         {
-            return _logger.EmailReport;
+            return string.Join("\n", _logger.EmailReport.ToArray());
         }
     }
 }
