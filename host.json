@@ -12,5 +12,6 @@
                 "Host.Aggregator": "verbose"
             }
         }
-    }
+    },
+    "functionTimeout": "00:10:00"
 }
